@@ -1,8 +1,14 @@
 module Lib
-    ( someFunc
+    ( printPalette
     ) where
 
-import Rainbow (putChunkLn, chunk, fore, blue)
+import Rainbow (putChunk, chunk, (&), back, color256)
 
-someFunc :: IO ()
-someFunc = putChunkLn $ fore blue $ chunk "Some blue text"
+palette256 = concatMap (\x -> map colorize_chunk x ++ chunk_return) $ map (\i -> map (\j -> 16 * i + j) range) range
+  where range          = [0..15]
+        colorize_chunk = (chunk " " &) . back . color256
+        chunk_return   = [chunk "\n"]
+
+
+printPalette :: IO ()
+printPalette = mapM_ putChunk palette256
